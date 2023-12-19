@@ -1,0 +1,50 @@
+name: Deployment in Multiple Job
+on: push
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: install dependencies
+        run: npm ci
+      - name: init lint
+        run: npm init @eslint/config
+      - name: run lint
+        run: npm run lint
+  test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: install dependencies
+        run: npm ci
+      - name: run tests
+        run: npm run test
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: install dependencies
+        run: npm ci
+      - name: build
+        run: npm run build
+      - name: deploy 
+        run: echo "Deployment...."
+
+
